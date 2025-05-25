@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Твоё наказание</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #0d0d0d;
+      color: #fff;
+      font-family: 'Rubik', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      text-align: center;
+      background-color: #1a1a1a;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .title {
+      font-size: 3.2rem;
+      margin-bottom: 1.5rem;
+      color: #e0e0e0;
+      letter-spacing: -0.05rem;
+    }
+
+    .punishment-display {
+      min-height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 2.5rem;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      color: #ff6b6b;
+      text-shadow: 0 0 15px rgba(255, 107, 107, 0.4);
+    }
+
+    .generate-btn {
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      padding: 1.2rem 2.5rem;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease-out, background-color 0.3s ease-out, box-shadow 0.3s ease-out;
+      box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+    }
+
+    .generate-btn:hover {
+      background-color: #45a049;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(76, 175, 80, 0.6);
+    }
+
+    .generate-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+    }
+
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .fade-in {
+      opacity: 1;
+      transition: opacity 0.4s;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">Твоё наказание:</h1>
+    <div class="punishment-display" id="punishment-display">Нажми кнопку</div>
+    <button class="generate-btn" onclick="generatePunishment()">Получить наказание</button>
+  </div>
+  <script>
+    const punishments = [
+      "Спеть одну песню",
+      "спеть песню томми кэша",
+      "Сделать 2 рандомных задания из учебника",
+      "Общаться ТОЛЬКО на английском 10 минут урока",
+      "Сказать любую фразу из фильма/сериала",
+      "Изобразить любого животного в течение 30 секунд",
+      "Придумать и рассказать анекдот на английском",
+      "Написать слово 10 раз левой рукой на доске, если никто не угадает что ты написал, делаешь 3 задания в учебнике",
+      "Сделать 15 приседаний, за каждое приседание говорить одно слово на одну и туже букву, буквы на выбор : G, Y, P, L",
+      "Говорить в рифму 1 минуту",
+      "Рассказать скороговорку на английском",
+      "Нарисовать что-нибудь на доске и обьяснить что нарисовал на английском",
+      "Сыграть в 'Камень, ножницы, бумага' с учителем, в случае проигрыша делаешь 3 задания, в случае выйгрыша делаешь 1 задание",
+    ];
+
+    function generatePunishment() {
+      const punishmentDisplay = document.getElementById("punishment-display");
+      punishmentDisplay.classList.add('fade-out');
+
+      setTimeout(() => {
+        const randomIndex = Math.floor(Math.random() * punishments.length);
+        punishmentDisplay.textContent = punishments[randomIndex];
+        punishmentDisplay.classList.remove('fade-out');
+        punishmentDisplay.classList.add('fade-in');
+
+        setTimeout(() => {
+          punishmentDisplay.classList.remove('fade-in');
+        }, 400);
+      }, 400);
+    }
+  </script>
+</body>
+</html>

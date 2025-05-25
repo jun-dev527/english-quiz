@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Quiz</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+/* styles.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Цветовая палитра для темной темы */
+    --primary: #528bff; /* Яркий синий для акцентов */
+    --primary-hover: #3d78ed; /* Темнее при наведении */
+    --success: #36d399; /* Зеленый для успеха */
+    --error: #ff6b6b; /* Красный для ошибок */
+    --background: #1a1a1a; /* Глубокий темный фон */
+    --surface: #2c2c2c; /* Поверхности карточек, чуть светлее фона */
+    --text-primary: #e0e0e0; /* Светлый текст на темном фоне */
+    --text-secondary: #a0a0a0; /* Более тусклый текст */
+    --border: #3a3a3a; /* Темные границы */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+    --shadow: 0 5px 15px rgba(0, 0, 0, 0.4); /* Основная тень, более выраженная */
+    --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.6); /* Тень при наведении, еще глубже */
+    --radius-sm: 0.375rem; /* 6px */
+    --radius: 0.75rem; /* 12px */
+    --radius-lg: 1.25rem; /* 20px */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--background);
+    color: var(--text-primary);
+    line-height: 1.6; /* Увеличена высота строки для читаемости */
+    -webkit-font-smoothing: antialiased;
+    padding: 0;
+    margin: 0;
+    display: flex; /* Для центрирования контейнера */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Занимает всю высоту viewport */
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto; /* Убираем margin-top/bottom из-за flexbox */
+    padding: 2.5rem 2rem; /* Увеличены отступы */
+}
+
+.quiz-header {
+    text-align: center;
+    margin-bottom: 3.5rem; /* Увеличен отступ */
+}
+
+.quiz-title {
+    font-size: 3rem; /* Крупнее заголовок */
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.25rem;
+    /* Градиент текста для темной темы */
+    background: linear-gradient(90deg, var(--primary), var(--success));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.quiz-description {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.question-card {
+    background-color: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: 2.5rem; /* Увеличены отступы */
+    margin-bottom: 2.5rem; /* Увеличен отступ */
+    transition: var(--transition);
+    border: 1px solid var(--border);
+}
+
+.question-card:hover {
+    box-shadow: var(--shadow-md); /* Более глубокая тень при наведении */
+    transform: translateY(-5px); /* Более выраженный эффект поднятия */
+}
+
+.question-title {
+    font-size: 1.375rem; /* Крупнее заголовок вопроса */
+    font-weight: 600;
+    margin-bottom: 1.75rem;
+    color: var(--text-primary);
+}
+
+.options-list {
+    list-style: none;
+}
+
+.option-item {
+    margin-bottom: 1rem; /* Увеличен отступ */
+    position: relative;
+}
+
+.option-label {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem; /* Увеличены отступы */
+    border-radius: var(--radius);
+    background-color: var(--background); /* Фон опции совпадает с фоном body */
+    cursor: pointer;
+    transition: var(--transition);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm); /* Небольшая тень для опции */
+}
+
+.option-label:hover {
+    background-color: rgba(var(--primary-rgb), 0.1); /* Легкий акцентный фон */
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2); /* Свечение при наведении */
+}
+
+/* Вспомогательные переменные для RGB, если необходимо использовать rgba() */
+:root {
+    --primary-rgb: 82, 139, 255;
+    --success-rgb: 54, 211, 153;
+    --error-rgb: 255, 107, 107;
+}
+
+.option-input {
+    position: absolute;
+    opacity: 0;
+}
+
+.option-input:checked + .option-label {
+    background-color: rgba(var(--primary-rgb), 0.2); /* Более выраженный фон для выбранной */
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary);
+}
+
+.option-text {
+    margin-left: 1.25rem; /* Увеличен отступ */
+    font-size: 1.05rem;
+    color: var(--text-primary);
+}
+
+.submit-btn {
+    display: block; /* Сделаем кнопки блочными и центрируем */
+    background-color: var(--primary);
+    color: white;
+    font-weight: 500;
+    padding: 0.9rem 2rem; /* Увеличены отступы */
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1.1rem;
+    margin-top: 2rem;
+    margin-left: auto; /* Центрирование */
+    margin-right: auto; /* Центрирование */
+    box-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.3); /* Тень для кнопки */
+}
+
+.submit-btn:hover:not(:disabled) {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(var(--primary-rgb), 0.4); /* Усиление тени */
+}
+
+.submit-btn:disabled {
+    opacity: 0.6; /* Чуть менее прозрачная */
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.feedback {
+    margin-top: 1.5rem;
+    font-weight: 500;
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--radius-sm);
+    text-align: center;
+}
+
+.feedback.correct {
+    color: var(--success);
+    background-color: rgba(var(--success-rgb), 0.15); /* Более выразительный фон */
+}
+
+.feedback.incorrect {
+    color: var(--error);
+    background-color: rgba(var(--error-rgb), 0.15); /* Более выразительный фон */
+}
+
+#finish-quiz-btn {
+    display: block;
+    width: 100%;
+    max-width: 350px; /* Увеличена максимальная ширина */
+    margin: 4rem auto 0; /* Увеличен отступ сверху */
+    padding: 1.2rem; /* Увеличены отступы */
+    font-size: 1.25rem;
+    background-color: var(--success);
+    box-shadow: 0 4px 10px rgba(var(--success-rgb), 0.3); /* Тень для зеленой кнопки */
+}
+
+#finish-quiz-btn:hover:not(:disabled) {
+    background-color: #2fb586; /* Темнее зеленый на hover */
+    box-shadow: 0 6px 15px rgba(var(--success-rgb), 0.4);
+}
+
+
+.results-container {
+    background-color: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 3rem; /* Увеличены отступы */
+    box-shadow: var(--shadow);
+    text-align: center;
+    margin-top: 3rem;
+    border: 1px solid var(--border);
+}
+
+.results-title {
+    font-size: 1.8rem; /* Крупнее заголовок результатов */
+    margin-bottom: 1.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.results-score {
+    font-size: 1.35rem; /* Крупнее текст счета */
+    margin-bottom: 1.25rem;
+    color: var(--text-primary);
+}
+
+.results-message {
+    font-size: 1.4rem; /* Крупнее итоговое сообщение */
+    font-weight: 600;
+    margin-top: 2rem;
+    padding: 1.2rem;
+    border-radius: var(--radius);
+}
+
+.results-message.pass {
+    color: var(--success);
+    background-color: rgba(var(--success-rgb), 0.2); /* Более выразительный фон */
+}
+
+.results-message.fail {
+    color: var(--error);
+    background-color: rgba(var(--error-rgb), 0.2); /* Более выразительный фон */
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); } /* Более выраженное начальное смещение */
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.question-card {
+    animation: fadeIn 0.4s ease-out forwards; /* Чуть дольше анимация */
+}
+
+/* Адаптивность */
+@media (max-width: 640px) {
+    .container {
+        padding: 1.5rem 1rem;
+    }
+
+    .quiz-title {
+        font-size: 2.2rem;
+    }
+
+    .question-card {
+        padding: 1.8rem;
+    }
+
+    .question-title {
+        font-size: 1.2rem;
+    }
+
+    .option-label {
+        padding: 0.8rem 1rem;
+    }
+
+    .option-text {
+        font-size: 0.95rem;
+    }
+
+    .submit-btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+    }
+
+    #finish-quiz-btn {
+        max-width: 250px;
+        font-size: 1rem;
+    }
+
+    .results-title {
+        font-size: 1.5rem;
+    }
+
+    .results-score, .results-message {
+        font-size: 1.1rem;
+    }
+}
+
+/* Прогресс бар */
+.progress-container {
+    width: 100%;
+    height: 8px; /* Чуть толще */
+    background-color: var(--border);
+    border-radius: 4px;
+    margin-top: 2rem; /* Отступ от описания */
+    margin-bottom: 3rem; /* Отступ до первой карточки */
+    overflow: hidden;
+    box-shadow: var(--shadow-sm); /* Небольшая тень */
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--success)); /* Акцентный градиент */
+    transition: width 0.4s ease-out; /* Чуть плавнее */
+    border-radius: 4px; /* Скругление */
+}
+    </style>
+</head>
+<body>
+<div class="container">
+        <div class="quiz-header">
+            <h1 class="quiz-title">English Quiz</h1>
+            <p class="quiz-description">Test your English skills with this interactive quiz</p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="question-card" id="question1">
+            <h2 class="question-title">Question 1: What is the meaning of the word "perseverance"?</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q1_option1" name="question1" value="incorrect" class="option-input">
+                    <label for="q1_option1" class="option-label">
+                        <span class="option-text">упорство</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q1_option2" name="question1" value="correct" class="option-input">
+                    <label for="q1_option2" class="option-label">
+                        <span class="option-text">настойчивость</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q1_option3" name="question1" value="incorrect" class="option-input">
+                    <label for="q1_option3" class="option-label">
+                        <span class="option-text">честность</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q1_option4" name="question1" value="incorrect" class="option-input">
+                    <label for="q1_option4" class="option-label">
+                        <span class="option-text">совесть</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="1">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+        
+        <div class="question-card" id="question2">
+            <h2 class="question-title">Question 2: Which of the following sentences is in the present perfect tense?</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q2_option1" name="question2" value="correct" class="option-input">
+                    <label for="q2_option1" class="option-label">
+                        <span class="option-text">I have eaten breakfast</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q2_option2" name="question2" value="incorrect" class="option-input">
+                    <label for="q2_option2" class="option-label">
+                        <span class="option-text">I eat breakfast every day</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q2_option3" name="question2" value="incorrect" class="option-input">
+                    <label for="q2_option3" class="option-label">
+                        <span class="option-text">I will eat breakfast tomorrow</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q2_option4" name="question2" value="incorrect" class="option-input">
+                    <label for="q2_option4" class="option-label">
+                        <span class="option-text">None of the above</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="2">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question3">
+            <h2 class="question-title">Question 3: Which of the following sentences is grammatically correct?</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q3_option1" name="question3" value="incorrect" class="option-input">
+                    <label for="q3_option1" class="option-label">
+                        <span class="option-text">She go to the school every day.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q3_option2" name="question3" value="incorrect" class="option-input">
+                    <label for="q3_option2" class="option-label">
+                        <span class="option-text">They is playing football now.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q3_option3" name="question3" value="correct" class="option-input">
+                    <label for="q3_option3" class="option-label">
+                        <span class="option-text">He has been working here since 2019.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q3_option4" name="question3" value="incorrect" class="option-input">
+                    <label for="q3_option4" class="option-label">
+                        <span class="option-text">I am agree with your opinion.</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="3">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question4">
+            <h2 class="question-title">Question 4: Choose the correct synonym for "ubiquitous".</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q4_option1" name="question4" value="incorrect" class="option-input">
+                    <label for="q4_option1" class="option-label">
+                        <span class="option-text">Rare</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q4_option2" name="question4" value="correct" class="option-input">
+                    <label for="q4_option2" class="option-label">
+                        <span class="option-text">Omnipresent</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q4_option3" name="question4" value="incorrect" class="option-input">
+                    <label for="q4_option3" class="option-label">
+                        <span class="option-text">Ancient</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q4_option4" name="question4" value="incorrect" class="option-input">
+                    <label for="q4_option4" class="option-label">
+                        <span class="option-text">Hidden</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="4">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question5">
+            <h2 class="question-title">Question 5: Complete the sentence: "If I _____ a bird, I _____ fly."</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q5_option1" name="question5" value="incorrect" class="option-input">
+                    <label for="q5_option1" class="option-label">
+                        <span class="option-text">am, would</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q5_option2" name="question5" value="correct" class="option-input">
+                    <label for="q5_option2" class="option-label">
+                        <span class="option-text">were, would</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q5_option3" name="question5" value="incorrect" class="option-input">
+                    <label for="q5_option3" class="option-label">
+                        <span class="option-text">was, will</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q5_option4" name="question5" value="incorrect" class="option-input">
+                    <label for="q5_option4" class="option-label">
+                        <span class="option-text">were, will</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="5">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question6">
+            <h2 class="question-title">Question 6: What is the past participle of the verb "to break"?</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q6_option1" name="question6" value="incorrect" class="option-input">
+                    <label for="q6_option1" class="option-label">
+                        <span class="option-text">Broke</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q6_option2" name="question6" value="correct" class="option-input">
+                    <label for="q6_option2" class="option-label">
+                        <span class="option-text">Broken</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q6_option3" name="question6" value="incorrect" class="option-input">
+                    <label for="q6_option3" class="option-label">
+                        <span class="option-text">Breaking</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q6_option4" name="question6" value="incorrect" class="option-input">
+                    <label for="q6_option4" class="option-label">
+                        <span class="option-text">Break</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="6">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question7">
+            <h2 class="question-title">Question 7: Which of these words is a conjunction?</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q7_option1" name="question7" value="incorrect" class="option-input">
+                    <label for="q7_option1" class="option-label">
+                        <span class="option-text">Quickly</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q7_option2" name="question7" value="incorrect" class="option-input">
+                    <label for="q7_option2" class="option-label">
+                        <span class="option-text">Beautiful</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q7_option3" name="question7" value="correct" class="option-input">
+                    <label for="q7_option3" class="option-label">
+                        <span class="option-text">Although</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q7_option4" name="question7" value="incorrect" class="option-input">
+                    <label for="q7_option4" class="option-label">
+                        <span class="option-text">Table</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="7">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question8">
+            <h2 class="question-title">Question 8: Identify the adjective in the following sentence: "The old house stood on a hill."</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q8_option1" name="question8" value="incorrect" class="option-input">
+                    <label for="q8_option1" class="option-label">
+                        <span class="option-text">Stood</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q8_option2" name="question8" value="correct" class="option-input">
+                    <label for="q8_option2" class="option-label">
+                        <span class="option-text">Old</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q8_option3" name="question8" value="incorrect" class="option-input">
+                    <label for="q8_option3" class="option-label">
+                        <span class="option-text">House</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q8_option4" name="question8" value="incorrect" class="option-input">
+                    <label for="q8_option4" class="option-label">
+                        <span class="option-text">Hill</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="8">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question9">
+            <h2 class="question-title">Question 9: What is the plural form of "child"?</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q9_option1" name="question9" value="incorrect" class="option-input">
+                    <label for="q9_option1" class="option-label">
+                        <span class="option-text">Childs</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q9_option2" name="question9" value="incorrect" class="option-input">
+                    <label for="q9_option2" class="option-label">
+                        <span class="option-text">Childes</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q9_option3" name="question9" value="correct" class="option-input">
+                    <label for="q9_option3" class="option-label">
+                        <span class="option-text">Children</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q9_option4" name="question9" value="incorrect" class="option-input">
+                    <label for="q9_option4" class="option-label">
+                        <span class="option-text">Child's</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="9">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question10">
+            <h2 class="question-title">Question 10: Choose the correct preposition to complete the sentence: "She is good ______ playing the piano."</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q10_option1" name="question10" value="incorrect" class="option-input">
+                    <label for="q10_option1" class="option-label">
+                        <span class="option-text">in</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q10_option2" name="question10" value="correct" class="option-input">
+                    <label for="q10_option2" class="option-label">
+                        <span class="option-text">at</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q10_option3" name="question10" value="incorrect" class="option-input">
+                    <label for="q10_option3" class="option-label">
+                        <span class="option-text">on</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q10_option4" name="question10" value="incorrect" class="option-input">
+                    <label for="q10_option4" class="option-label">
+                        <span class="option-text">for</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="10">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question11">
+            <h2 class="question-title">Question 11: Which sentence uses a gerund correctly?</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q11_option1" name="question11" value="incorrect" class="option-input">
+                    <label for="q11_option1" class="option-label">
+                        <span class="option-text">To swim is my favorite hobby.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q11_option2" name="question11" value="correct" class="option-input">
+                    <label for="q11_option2" class="option-label">
+                        <span class="option-text">Swimming is my favorite hobby.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q11_option3" name="question11" value="incorrect" class="option-input">
+                    <label for="q11_option3" class="option-label">
+                        <span class="option-text">I like to swimming.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q11_option4" name="question11" value="incorrect" class="option-input">
+                    <label for="q11_option4" class="option-label">
+                        <span class="option-text">She goes to swim everyday.</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="11">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question12">
+            <h2 class="question-title">Question 12: What is the superlative form of "good"?</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q12_option1" name="question12" value="incorrect" class="option-input">
+                    <label for="q12_option1" class="option-label">
+                        <span class="option-text">Gooder</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q12_option2" name="question12" value="incorrect" class="option-input">
+                    <label for="q12_option2" class="option-label">
+                        <span class="option-text">More good</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q12_option3" name="question12" value="correct" class="option-input">
+                    <label for="q12_option3" class="option-label">
+                        <span class="option-text">Best</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q12_option4" name="question12" value="incorrect" class="option-input">
+                    <label for="q12_option4" class="option-label">
+                        <span class="option-text">Goodest</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="12">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question13">
+            <h2 class="question-title">Question 13: Which of the following is an example of an idiom?</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q13_option1" name="question13" value="incorrect" class="option-input">
+                    <label for="q13_option1" class="option-label">
+                        <span class="option-text">The cat sat on the mat.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q13_option2" name="question13" value="correct" class="option-input">
+                    <label for="q13_option2" class="option-label">
+                        <span class="option-text">It's raining cats and dogs.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q13_option3" name="question13" value="incorrect" class="option-input">
+                    <label for="q13_option3" class="option-label">
+                        <span class="option-text">She sang a song.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q13_option4" name="question13" value="incorrect" class="option-input">
+                    <label for="q13_option4" class="option-label">
+                        <span class="option-text">He reads a book.</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="13">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question14">
+            <h2 class="question-title">Question 14: Choose the sentence with the correct use of "affect" or "effect".</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q14_option1" name="question14" value="incorrect" class="option-input">
+                    <label for="q14_option1" class="option-label">
+                        <span class="option-text">The effect of the medicine was good.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q14_option2" name="question14" value="incorrect" class="option-input">
+                    <label for="q14_option2" class="option-label">
+                        <span class="option-text">The medicine didn't affect him.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q14_option3" name="question14" value="correct" class="option-input">
+                    <label for="q14_option3" class="option-label">
+                        <span class="option-text">Both A and B are correct.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q14_option4" name="question14" value="incorrect" class="option-input">
+                    <label for="q14_option4" class="option-label">
+                        <span class="option-text">Neither A nor B is correct.</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="14">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question15">
+            <h2 class="question-title">Question 15: Which of the following is a collective noun?</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q15_option1" name="question15" value="incorrect" class="option-input">
+                    <label for="q15_option1" class="option-label">
+                        <span class="option-text">Student</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q15_option2" name="question15" value="correct" class="option-input">
+                    <label for="q15_option2" class="option-label">
+                        <span class="option-text">Flock</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q15_option3" name="question15" value="incorrect" class="option-input">
+                    <label for="q15_option3" class="option-label">
+                        <span class="option-text">Book</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q15_option4" name="question15" value="incorrect" class="option-input">
+                    <label for="q15_option4" class="option-label">
+                        <span class="option-text">Tree</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="15">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question16">
+            <h2 class="question-title">Question 16: Complete the sentence with the correct article: "He is ______ honest man."</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q16_option1" name="question16" value="incorrect" class="option-input">
+                    <label for="q16_option1" class="option-label">
+                        <span class="option-text">a</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q16_option2" name="question16" value="correct" class="option-input">
+                    <label for="q16_option2" class="option-label">
+                        <span class="option-text">an</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q16_option3" name="question16" value="incorrect" class="option-input">
+                    <label for="q16_option3" class="option-label">
+                        <span class="option-text">the</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q16_option4" name="question16" value="incorrect" class="option-input">
+                    <label for="q16_option4" class="option-label">
+                        <span class="option-text">no article</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="16">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question17">
+            <h2 class="question-title">Question 17: Which of the following words is misspelled?</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q17_option1" name="question17" value="incorrect" class="option-input">
+                    <label for="q17_option1" class="option-label">
+                        <span class="option-text">Separate</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q17_option2" name="question17" value="correct" class="option-input">
+                    <label for="q17_option2" class="option-label">
+                        <span class="option-text">Recieve</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q17_option3" name="question17" value="incorrect" class="option-input">
+                    <label for="q17_option3" class="option-label">
+                        <span class="option-text">Definitely</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q17_option4" name="question17" value="incorrect" class="option-input">
+                    <label for="q17_option4" class="option-label">
+                        <span class="option-text">Accommodate</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="17">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question18">
+            <h2 class="question-title">Question 18: What is the passive voice of "The boy ate the apple"?</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q18_option1" name="question18" value="incorrect" class="option-input">
+                    <label for="q18_option1" class="option-label">
+                        <span class="option-text">The apple ate the boy.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q18_option2" name="question18" value="correct" class="option-input">
+                    <label for="q18_option2" class="option-label">
+                        <span class="option-text">The apple was eaten by the boy.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q18_option3" name="question18" value="incorrect" class="option-input">
+                    <label for="q18_option3" class="option-label">
+                        <span class="option-text">The apple is eaten by the boy.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q18_option4" name="question18" value="incorrect" class="option-input">
+                    <label for="q18_option4" class="option-label">
+                        <span class="option-text">The boy was eating the apple.</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="18">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question19">
+            <h2 class="question-title">Question 19: Choose the sentence that correctly uses a semicolon.</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q19_option1" name="question19" value="incorrect" class="option-input">
+                    <label for="q19_option1" class="option-label">
+                        <span class="option-text">I like coffee, and she likes tea.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q19_option2" name="question19" value="correct" class="option-input">
+                    <label for="q19_option2" class="option-label">
+                        <span class="option-text">I like coffee; however, she likes tea.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q19_option3" name="question19" value="incorrect" class="option-input">
+                    <label for="q19_option3" class="option-label">
+                        <span class="option-text">He went to the store; to buy milk.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q19_option4" name="question19" value="incorrect" class="option-input">
+                    <label for="q19_option4" class="option-label">
+                        <span class="option-text">She is happy; because she passed the exam.</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="19">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question-card" id="question20">
+            <h2 class="question-title">Question 20: Which of the following is a complex sentence?</h2>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" id="q20_option1" name="question20" value="incorrect" class="option-input">
+                    <label for="q20_option1" class="option-label">
+                        <span class="option-text">The sun shines.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q20_option2" name="question20" value="incorrect" class="option-input">
+                    <label for="q20_option2" class="option-label">
+                        <span class="option-text">I went to the store, and I bought groceries.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q20_option3" name="question20" value="correct" class="option-input">
+                    <label for="q20_option3" class="option-label">
+                        <span class="option-text">Although it was raining, we went for a walk.</span>
+                    </label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" id="q20_option4" name="question20" value="incorrect" class="option-input">
+                    <label for="q20_option4" class="option-label">
+                        <span class="option-text">She is a doctor.</span>
+                    </label>
+                </li>
+            </ul>
+            <button class="submit-btn" data-question-id="20">Submit Answer</button>
+            <div class="feedback"></div>
+        </div>
+
+        <button id="finish-quiz-btn" class="submit-btn">Finish Quiz</button>
+
+        <div id="final-results" class="results-container" style="display: none;">
+            </div>
+    </div>
+
+    <script>
+// quiz.js
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Элементы прогресс бара
+    const progressBar = document.getElementById('progress-bar');
+    const totalQuestions = 20; // Общее количество вопросов
+    
+    // Обновление прогресс бара
+    function updateProgressBar(answered) {
+        const progress = (answered / totalQuestions) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
+    
+    // Инициализация прогресс бара (показывает 0% в начале)
+    updateProgressBar(0);
+    
+    // Основная логика квиза
+    const submitButtons = document.querySelectorAll('.submit-btn');
+    const finishQuizButton = document.getElementById('finish-quiz-btn');
+    const passingScore = 15; // Пример: 15 правильных ответов для прохождения
+    let score = 0;
+    let correctAnswers = 0;
+    let questionsAnswered = 0;
+    const submittedQuestions = new Set(); // Чтобы не засчитывать один и тот же вопрос несколько раз
+
+    submitButtons.forEach(button => {
+        // Убедимся, что это не кнопка "Finish Quiz", которая имеет другой ID
+        if (button.id !== 'finish-quiz-btn') {
+            button.addEventListener('click', function() {
+                const questionId = this.getAttribute('data-question-id');
+                const questionWrapper = document.getElementById(`question${questionId}`);
+                const selectedOption = questionWrapper.querySelector(`input[name="question${questionId}"]:checked`);
+                const feedbackElement = questionWrapper.querySelector('.feedback');
+                const options = questionWrapper.querySelectorAll('input[type="radio"]');
+
+                // Если вопрос уже был отправлен, ничего не делаем
+                if (submittedQuestions.has(questionId)) {
+                    return;
+                }
+
+                // Проверка, выбран ли ответ
+                if (!selectedOption) {
+                    feedbackElement.textContent = 'Please select an answer!';
+                    feedbackElement.className = 'feedback incorrect';
+                    return;
+                }
+
+                // Добавляем вопрос в список отвеченных
+                submittedQuestions.add(questionId);
+                questionsAnswered++;
+                updateProgressBar(questionsAnswered); // Обновляем прогресс бар
+
+                // Отключаем опции и кнопку "Submit" после ответа
+                options.forEach(option => {
+                    option.disabled = true;
+                });
+                this.disabled = true;
+
+                const isCorrect = selectedOption.value === 'correct';
+
+                if (isCorrect) {
+                    feedbackElement.textContent = 'Correct! (+20 points)';
+                    feedbackElement.className = 'feedback correct';
+                    score += 20;
+                    correctAnswers++;
+                } else {
+                    feedbackElement.textContent = 'Incorrect! The correct answer is highlighted.';
+                    feedbackElement.className = 'feedback incorrect';
+
+                    // Подсвечиваем правильный ответ
+                    const correctOptionLabel = questionWrapper.querySelector('input[value="correct"]').nextElementSibling;
+                    if (correctOptionLabel) {
+                        correctOptionLabel.style.color = 'var(--success)';
+                        correctOptionLabel.style.fontWeight = '600';
+                    }
+                }
+
+                // Если отвечены все вопросы, показываем финальные результаты
+                if (questionsAnswered === totalQuestions) {
+                    showFinalResults();
+                }
+            });
+        }
+    });
+
+    // Обработчик для кнопки "Finish Quiz"
+    finishQuizButton.addEventListener('click', function() {
+        showFinalResults();
+    });
+
+    // Функция показа финальных результатов
+    function showFinalResults() {
+        const quizContainer = document.querySelector('.container');
+        const finalResultsDiv = document.getElementById('final-results');
+
+        // Скрываем все вопросы, кнопки и прогресс бар
+        document.querySelectorAll('.question-card').forEach(q => q.style.display = 'none');
+        document.querySelectorAll('.submit-btn').forEach(btn => btn.style.display = 'none');
+        finishQuizButton.style.display = 'none';
+        document.querySelector('.progress-container').style.display = 'none'; // Скрыть прогресс бар
+
+        // Показываем блок с результатами
+        finalResultsDiv.style.display = 'block';
+        finalResultsDiv.innerHTML = `
+            <h2 class="results-title">Quiz Results</h2>
+            <p class="results-score">Your total score: <strong>${score} points</strong></p>
+            <p class="results-score">Correct answers: <strong>${correctAnswers} out of ${totalQuestions}</strong></p>
+        `;
+
+        const finalMessageP = document.createElement('p');
+        finalMessageP.classList.add('results-message');
+
+        if (correctAnswers >= passingScore) {
+            finalMessageP.textContent = 'Congratulations! You passed the test!';
+            finalMessageP.classList.add('pass');
+        } else {
+            finalMessageP.textContent = 'You failed! Preparing punishment...';
+            finalMessageP.classList.add('fail');
+            
+            // Перенаправление на страницу наказания через 5 секунд
+            setTimeout(() => {
+                window.location.href = 'punishment.html';
+            }, 5000); 
+        }
+        finalResultsDiv.appendChild(finalMessageP);
+
+        // Прокручиваем к результатам
+        finalResultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+});
+    </script>
+</body>
+</html>
